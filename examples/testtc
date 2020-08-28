@@ -1,0 +1,13 @@
+#!/bin/sh
+set -x
+set -e
+
+netdev=${1:-enp14s0u1}
+
+sudo tc qdisc del dev $netdev clsact || true
+sudo tc qdisc add dev $netdev clsact
+sudo tc filter add dev $netdev ingress bpf da obj tc-example.o sec ingress
+sudo tc filter add dev $netdev egress bpf da obj tc-example.o sec egress
+sudo cat /sys/kernel/debug/tracing/trace_pipe || true
+sudo cat /media/root/sys/kernel/debug/tracing/trace_pipe
+
